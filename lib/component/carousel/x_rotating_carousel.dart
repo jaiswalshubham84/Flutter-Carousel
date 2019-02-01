@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-class ZcarouselState extends StatelessWidget {
+class XcarouselState extends StatelessWidget {
   int currentPage;
   bool initial = true;
   final dynamic props;
-  ZcarouselState(
+
+  XcarouselState(
     this.props,
   ) {
     currentPage = 0;
@@ -25,10 +26,10 @@ class ZcarouselState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int count = props.children.length;
+    initial = true;
     WidgetsBinding.instance
         .addPostFrameCallback((_) => props.updateIndicator(currentPage));
-
-    Widget carouselBuilder = new PageView.builder(
+    Widget caouselBuilder = new PageView.builder(
         controller: props.controller,
         scrollDirection: props.axis,
         itemCount: count,
@@ -41,16 +42,19 @@ class ZcarouselState extends StatelessWidget {
       child: new Container(
         height: props.height,
         width: props.width,
+        margin: new EdgeInsets.only(bottom: 5.0),
         child: props.axis == Axis.horizontal
-            ? carouselBuilder
+            ? caouselBuilder
             : Container(
-                child: carouselBuilder,
+                child: caouselBuilder,
               ),
       ),
     );
   }
 
-  builder(int index) {
+  builder(
+    int index,
+  ) {
     Matrix4 _pmat(num pv) {
       return new Matrix4(
         1.0, 0.0, 0.0, 0.0, //
@@ -65,35 +69,25 @@ class ZcarouselState extends StatelessWidget {
       animation: props.controller,
       builder: (context, child) {
         double value = 1.0;
-        value =
-            initial ? initiate(index) : value = props.controller.page - index;
-        value = (1 - (value.abs() * 0.2)).clamp(0.0, 1.0);
-        print("value => $index => $value");
-        return new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            new Transform(
-              alignment: FractionalOffset.center,
-              transform: perspective.scaled(1.0, 1.0, 1.0)
-                ..rotateX(0.0)
-                ..rotateY(((value) * 3393) / 90)
-                ..rotateZ(0.0),
-              child: new Opacity(
-                opacity: math.pow(value, 2),
-                child: new Material(
-                  borderRadius: new BorderRadius.circular(
-                      (5 - ((1.0 - value) * 25)).clamp(0.1, 5.0)),
-                  elevation: (value > 0.9 ? 50.0 : 0.0),
-                  child: new Container(
-                    height: props.height * value,
-                    width: props.width * value,
-                    child: props.children[index],
-                  ),
-                ),
+        value = initial ? initiate(index) : props.controller.page - index;
+        value = (1 - (value.abs())).clamp(0.0, 1.0);
+        return new Transform(
+          alignment: FractionalOffset.center,
+          transform: perspective.scaled(1.0, 1.0, 1.0)
+            ..rotateX((value * ((180 * 6) + 50.0)) / 180)
+            ..rotateY(0.0)
+            ..rotateZ(0.0),
+          child: new Opacity(
+            opacity: math.pow(value, 4),
+            child: new Material(
+              elevation: (value > 0.9 ? 50.0 : 0.0),
+              child: new Container(
+                height: (props.height) * value,
+                width: props.width,
+                child: props.children[index],
               ),
             ),
-          ],
+          ),
         );
       },
     );

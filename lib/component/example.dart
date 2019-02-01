@@ -1,176 +1,117 @@
+import 'package:carosel/component/button.dart';
+import 'package:carosel/component/carousel/carousel.dart';
+import 'package:carosel/component/data.dart';
+import 'package:carosel/component/style.dart';
+import 'package:carosel/service/screen_ratio.dart';
 import 'package:flutter/material.dart';
-import 'package:carosel/component/carousel/index.dart';
-import 'package:carosel/component/carousel/rotatingcarousel.dart';
-import 'package:carosel/component/carousel/zrotatingcarousel.dart';
-import 'package:carosel/component/carousel/xrotatingcarousel.dart';
-import 'package:carosel/component/carousel/multi_axis_carousel.dart';
-import 'data.dart';
-import 'style.dart';
 
-class Example extends StatefulWidget {
+class CarouselDemoExample extends StatefulWidget {
   @override
-  _ExampleState createState() => new _ExampleState();
+  _ExampleState createState() => _ExampleState();
 }
 
-class _ExampleState extends State<Example> {
-  int i = 0;
-  List<dynamic> list = new DataListBuilder().cardList;
+class _ExampleState extends State<CarouselDemoExample> {
+  Axis axis = Axis.horizontal;
+  String type = "simple";
+  String axisType = "HORIZONTAL";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    return new MaterialApp(
-      home: new DefaultTabController(
-        length: 8,
-        child: new Scaffold(
-          appBar: new AppBar(
-            bottom: new TabBar(
-              tabs: [
-                new Tab(
-                  text: '1',
-                ),
-                new Tab(
-                  text: '2',
-                ),
-                new Tab(
-                  text: '3',
-                ),
-                new Tab(
-                  text: '4',
-                ),
-                new Tab(
-                  text: '5',
-                ),
-                new Tab(
-                  text: '6',
-                ),
-                new Tab(
-                  text: '7',
-                ),
-                new Tab(
-                  text: '8',
-                ),
-              ],
+    Size size = MediaQuery.of(context).size;
+    double hf = size.height / 667.0;
+    double wf = size.width / 375.0;
+    ScreenRatio.setScreenRatio(size: size);
+    print(axis);
+    int i = 0;
+
+    List<dynamic> list = new DataListBuilder().cardList;
+    return new Scaffold(
+      body: Column(
+        children: <Widget>[
+          new Padding(
+            padding: new EdgeInsets.only(top: 40.0),
+          ),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[]..addAll(["HORIZONTAL", "VERTICAL"]
+                  .map(
+                    (String axisType) => new RoundButton(
+                          height: 40.0 * hf,
+                          width: 160.0 * hf,
+                          color: this.axisType == axisType
+                              ? Color(0xff4C70C7)
+                              : Color(0xffb5b8b9),
+                          text: axisType,
+                          onPressed: () {
+                            this.setState(() {
+                              this.axisType = axisType;
+                              axis = axisType == "HORIZONTAL"
+                                  ? Axis.horizontal
+                                  : Axis.vertical;
+                            });
+                          },
+                        ),
+                  )
+                  .toList())),
+          new Container(
+            padding: new EdgeInsets.only(top: 30.0 * hf, bottom: 30.0 * hf),
+            child: Carousel(
+              height: 350.0 * hf,
+              width: size.width,
+              type: type,
+              axis: axis,
+              children: list.map((l) {
+                i++;
+                return (new Container(
+                  decoration: decoration(l.pic),
+                ));
+              }).toList(),
             ),
-            title: new Text('Carousel Demo'),
           ),
-          body: new TabBarView(
-            children: [
-              new Container(
-                child: new SimpleCarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
+          Wrap(
+              direction: Axis.horizontal,
+              spacing: 5.0 * wf,
+              runSpacing: 10.0,
+              alignment: WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              children: <Widget>[]..addAll([
+                  "simple",
+                  "slideswiper",
+                  "xRotating",
+                  "yrotating",
+                  "zRotating",
+                  "multirotating"
+                ]
+                    .map(
+                      (String carouselType) => new RoundButton(
+                            height: 45.0 * hf,
+                            width: carouselType == "multirotating"
+                                ? 135.0 * hf
+                                : 125.0 * hf,
+                            color: type == carouselType
+                                ? Color(0xff8FAD16)
+                                : Color(0xffb5b8b9),
+                            text: carouselType,
+                            onPressed: () {
+                              this.setState(() {
+                                type = carouselType;
+                              });
+                            },
+                          ),
+                    )
+                    .toList())
+
+              // new Example()
               ),
-              new Container(
-                child: new RotatingCarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.horizontal,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-              new Container(
-                child: new Zcarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.horizontal,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-              new Container(
-                child: new MultiAxisCarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.horizontal,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-              new Container(
-                child: new RotatingCarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.vertical,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-              new Container(
-                child: new MultiAxisCarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.vertical,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-              new Container(
-                child: new Zcarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.vertical,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-              new Container(
-                child: new Xcarousel(
-                  height: screenSize.height,
-                  width: screenSize.width,
-                  axis: Axis.vertical,
-                  opacity: 1.0,
-                  children: list.map((l) {
-                    i++;
-                    return (new Container(
-                      decoration: decoration(l.pic),
-                    ));
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
       ),
+      // ),
     );
   }
 }

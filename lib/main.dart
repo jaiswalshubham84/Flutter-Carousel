@@ -1,16 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:carosel/component/example.dart';
+import 'package:flutter/material.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(new App());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      home: new Example(),
+      home: CarouselDemoExample(),
     );
   }
 }
