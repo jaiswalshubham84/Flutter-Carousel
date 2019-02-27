@@ -1,9 +1,9 @@
 import 'package:carosel/component/indicator/widget/props.dart';
 import 'package:flutter/material.dart';
 
-class BarIndicator extends StatelessWidget {
+class BarIndicator extends AnimatedWidget {
   Props props;
-  BarIndicator({this.props});
+  BarIndicator({this.props}) : super(listenable: props.controller);
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -12,7 +12,8 @@ class BarIndicator extends StatelessWidget {
         width: ((props.width) * .80),
         color: props.unSelectedColor ?? Color(0xff4C5158),
         padding: new EdgeInsets.only(
-          left: (((props.width * 0.8) / props.totalPage) * (props.currentPage)),
+          left: (((props.width * 0.8) / props.totalPage) *
+              (props.controller.page ?? 0)),
         ),
         child: new Container(
           width: (props.width * 0.8) / props.totalPage,

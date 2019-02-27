@@ -30,16 +30,12 @@ class SlideSwipe extends StatelessWidget {
   Widget build(BuildContext context) {
     initial = true;
     int count = props.children.length;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => props.updateIndicator(currentPage));
-
     Widget carouserBuilder = new PageView.builder(
         scrollDirection: props.axis,
         controller: controller,
         itemCount: count,
         onPageChanged: (i) {
           currentPage = i;
-          props.updateIndicator(i);
         },
         itemBuilder: (context, index) => builder(index, controller));
     return new Column(
@@ -63,7 +59,9 @@ class SlideSwipe extends StatelessWidget {
       animation: controller1,
       builder: (context, child) {
         double value = 1.0;
-        value = initial ? initiate(index) : value = controller1.page - index;
+        value = initial
+            ? initiate(index) ?? controller1.page - index
+            : controller1.page - index;
         value = (1 - (value.abs() * .2)).clamp(0.0, 1.0);
         return new Opacity(
           opacity: pow(value, 4),

@@ -14,12 +14,8 @@ class XcarouselState extends StatelessWidget {
 
   initiate(index) {
     double value;
-    if (index == currentPage - 1 && initial) value = 1.0;
     if (index == currentPage && initial) value = 0.0;
-    if (index == currentPage + 1 && initial) {
-      value = 1.0;
-      initial = false;
-    }
+    initial = false;
     return value;
   }
 
@@ -27,15 +23,12 @@ class XcarouselState extends StatelessWidget {
   Widget build(BuildContext context) {
     int count = props.children.length;
     initial = true;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => props.updateIndicator(currentPage));
     Widget caouselBuilder = new PageView.builder(
         controller: props.controller,
         scrollDirection: props.axis,
         itemCount: count,
         onPageChanged: (i) {
           currentPage = i;
-          props.updateIndicator(i);
         },
         itemBuilder: (context, index) => builder(index));
     return Center(
@@ -69,7 +62,9 @@ class XcarouselState extends StatelessWidget {
       animation: props.controller,
       builder: (context, child) {
         double value = 1.0;
-        value = initial ? initiate(index) : props.controller.page - index;
+        value = initial
+            ? initiate(index) ?? props.controller.page - index
+            : props.controller.page - index;
         value = (1 - (value.abs())).clamp(0.0, 1.0);
         return new Transform(
           alignment: FractionalOffset.center,

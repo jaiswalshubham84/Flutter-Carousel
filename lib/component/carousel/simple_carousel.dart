@@ -16,30 +16,22 @@ class SimpleCarousel extends StatelessWidget {
 
   initiate(index) {
     double value;
-
-    if (index == currentPage - 1 && initial) value = 1.0;
     if (index == currentPage && initial) value = 0.0;
-    if (index == currentPage + 1 && initial) {
-      value = 1.0;
-      initial = false;
-    }
+    initial = false;
     return value;
   }
 
   @override
   Widget build(BuildContext context) {
+    print("controller in carousel => ${props.controller}");
     initial = true;
     currentPage = 0;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => props.updateIndicator(currentPage));
-
     carouserBuilder = new PageView.builder(
         scrollDirection: props.axis,
         controller: props.controller,
         itemCount: props.children.length,
         onPageChanged: (i) {
           currentPage = i;
-          props.updateIndicator(i);
         },
         itemBuilder: (context, index) => builder(index, props.controller));
     return new Column(
@@ -59,11 +51,14 @@ class SimpleCarousel extends StatelessWidget {
   }
 
   builder(int index, PageController controller1) {
+    initial = true;
     return new AnimatedBuilder(
       animation: controller1,
       builder: (context, child) {
         double value = 1.0;
-        value = initial ? initiate(index) : controller1.page - index;
+        value = initial
+            ? initiate(index) ?? controller1.page - index
+            : controller1.page - index;
         value = (1 - (value.abs() * .2)).clamp(0.0, 1.0);
         return new Column(
           mainAxisAlignment: MainAxisAlignment.center,

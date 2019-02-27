@@ -11,20 +11,14 @@ class RotatingCarouselState extends StatelessWidget {
 
   initiate(index) {
     double value;
-    if (index == currentPage - 1 && initial) value = 1.0;
     if (index == currentPage && initial) value = 0.0;
-    if (index == currentPage + 1 && initial) {
-      value = 1.0;
-      initial = false;
-    }
+    initial = false;
     return value;
   }
 
   @override
   Widget build(BuildContext context) {
     int count = props.children.length;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => props.updateIndicator(currentPage));
 
     Widget caroselBuilder = new PageView.builder(
         scrollDirection: props.axis,
@@ -32,7 +26,6 @@ class RotatingCarouselState extends StatelessWidget {
         itemCount: count,
         onPageChanged: (i) {
           currentPage = i;
-          props.updateIndicator(i);
         },
         itemBuilder: (context, index) => builder(index, props.controller));
     return new Center(
@@ -52,7 +45,9 @@ class RotatingCarouselState extends StatelessWidget {
       animation: controller1,
       builder: (context, child) {
         double value = 1.0;
-        value = initial ? initiate(index) : value = controller1.page - index;
+        value = initial
+            ? initiate(index) ?? controller1.page - index
+            : controller1.page - index;
         value = (1 - (value.abs() * .2)).clamp(0.0, 1.0);
         return new RotationTransition(
           turns: new AlwaysStoppedAnimation((value * ((180 * 6))) / 180),

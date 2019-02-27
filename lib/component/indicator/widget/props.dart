@@ -6,10 +6,12 @@ class Props {
   final Color unSelectedColor;
   final int totalPage;
   final double width;
+  final PageController controller;
   Props(
       {this.totalPage,
       this.selectedColor,
       this.unSelectedColor,
       this.currentPage,
-      this.width});
+      this.width,
+      this.controller});
 }

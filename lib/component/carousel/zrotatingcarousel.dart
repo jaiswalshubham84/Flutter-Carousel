@@ -13,20 +13,14 @@ class ZcarouselState extends StatelessWidget {
 
   initiate(index) {
     double value;
-    if (index == currentPage - 1 && initial) value = 1.0;
     if (index == currentPage && initial) value = 0.0;
-    if (index == currentPage + 1 && initial) {
-      value = 1.0;
-      initial = false;
-    }
+    initial = false;
     return value;
   }
 
   @override
   Widget build(BuildContext context) {
     int count = props.children.length;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => props.updateIndicator(currentPage));
 
     Widget carouselBuilder = new PageView.builder(
         controller: props.controller,
@@ -34,7 +28,6 @@ class ZcarouselState extends StatelessWidget {
         itemCount: count,
         onPageChanged: (i) {
           currentPage = i;
-          props.updateIndicator(i);
         },
         itemBuilder: (context, index) => builder(index));
     return Center(
@@ -65,8 +58,9 @@ class ZcarouselState extends StatelessWidget {
       animation: props.controller,
       builder: (context, child) {
         double value = 1.0;
-        value =
-            initial ? initiate(index) : value = props.controller.page - index;
+        value = initial
+            ? initiate(index) ?? props.controller1.page - index
+            : value = props.controller.page - index;
         value = (1 - (value.abs() * 0.2)).clamp(0.0, 1.0);
         print("value => $index => $value");
         return new Column(

@@ -13,28 +13,20 @@ class MultiAxisCarouselState extends StatelessWidget {
 
   initiate(index) {
     double value;
-    if (index == currentPage - 1 && initial) value = 1.0;
     if (index == currentPage && initial) value = 0.0;
-    if (index == currentPage + 1 && initial) {
-      value = 1.0;
-      initial = false;
-    }
+    initial = false;
     return value;
   }
 
   @override
   Widget build(BuildContext context) {
     int count = props.children.length;
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => props.updateIndicator(currentPage));
-
     Widget carouselBuilder = new PageView.builder(
         controller: props.controller,
         scrollDirection: props.axis,
         itemCount: count,
         onPageChanged: (i) {
           currentPage = i;
-          props.updateIndicator(i);
         },
         itemBuilder: (context, index) => builder(index, props.controller));
     return Center(
@@ -65,7 +57,9 @@ class MultiAxisCarouselState extends StatelessWidget {
       animation: controller1,
       builder: (context, child) {
         double value = 1.0;
-        value = initial ? initiate(index) : value = controller1.page - index;
+        value = initial
+            ? initiate(index) ?? controller1.page - index
+            : value = controller1.page - index;
         value = (1 - (value.abs() * 0.2)).clamp(0.0, 1.0);
         return new Column(
           mainAxisAlignment: MainAxisAlignment.center,

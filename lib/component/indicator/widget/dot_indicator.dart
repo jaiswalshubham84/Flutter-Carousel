@@ -1,22 +1,56 @@
+import 'dart:math';
 import 'package:carosel/component/indicator/widget/props.dart';
 import 'package:carosel/service/screen_ratio.dart';
 import 'package:flutter/material.dart';
 
-class DotIndicator extends StatelessWidget {
+class DotIndicator extends AnimatedWidget {
+  Color selectedColor;
+  Color unselectedColor;
+  Animatable<Color> background;
   Props props;
   double wf = ScreenRatio.widthRatio;
-  DotIndicator({this.props});
+
+  DotIndicator({this.props}) : super(listenable: props.controller) {
+    print("csdvfgfhgj");
+    props.controller.addListener(() {
+      print("dsfg");
+    });
+    selectedColor = props.selectedColor ?? Colors.white;
+    unselectedColor = props.unSelectedColor ?? Colors.transparent;
+    background = TweenSequence<Color>([
+      TweenSequenceItem(
+        weight: 1.0,
+        tween: ColorTween(
+          begin: unselectedColor,
+          end: selectedColor,
+        ),
+      ),
+    ]);
+  }
+
+  transformValue(index) {
+    print("controlle=> ${props.controller}");
+    double value;
+    if (props.controller.hasClients) {
+      print("controlle=> ${props.controller?.page}");
+      value = max(
+        0.0,
+        1.0 - ((props.controller.page ?? 0.0) - index).abs(),
+      );
+      print("$value => $index");
+    }
+    return value ?? 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Container(
         alignment: Alignment.topLeft,
         height: 20.0,
-        // width: (20.0 * count),
-        // color: Colors.blue.shade200,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[]..addAll(List.generate(
-              40,
+              props.totalPage,
               (int index) => Container(
                     child: Center(
                       child: AnimatedContainer(
@@ -26,42 +60,15 @@ class DotIndicator extends StatelessWidget {
                         width: (((props.width * wf) / (props.totalPage))
                             .clamp(1.0, 8.0)),
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: props.currentPage == index
-                              ? props.selectedColor ?? Colors.black
-                              : props.unSelectedColor ?? Colors.white,
-                        ),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: selectedColor),
+                            color: transformValue(index) > 0.1
+                                ? background.evaluate(AlwaysStoppedAnimation(
+                                    transformValue(index)))
+                                : unselectedColor),
                       ),
                     ),
                   )).toList()),
-        )
-
-        // ListView.builder(
-        //   itemCount: 40,
-        //   scrollDirection: Axis.horizontal,
-        //   itemBuilder: (context, index) {
-        //     return Container(
-        //       height: 40.0,
-        //       width: 40.0,
-        //       padding: EdgeInsets.only(right: 1.0, left: 1.0),
-        //       margin: EdgeInsets.only(left: 10.0, right: 10.0),
-        //       child: Center(
-        //         child: AnimatedContainer(
-        //           duration: Duration(milliseconds: 100),
-        //           height: 10.0,
-        //           width: 10.0,
-        //           decoration: BoxDecoration(
-        //             shape: BoxShape.circle,
-        //             color: props.currentPage == index
-        //                 ? Colors.red.shade300
-        //                 : Colors.white,
-        //             border: Border.all(color: Colors.red.shade300),
-        //           ),
-        //         ),
-        //       ),
-        //     );
-        //   },
-        // )
-        );
+        ));
   }
 }

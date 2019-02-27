@@ -23,6 +23,7 @@ class RoundButton extends StatelessWidget {
           child: new Center(
             child: new Text(
               text,
+              textAlign: TextAlign.center,
               style: new TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ),

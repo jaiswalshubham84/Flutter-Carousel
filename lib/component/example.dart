@@ -27,12 +27,11 @@ class _ExampleState extends State<CarouselDemoExample> {
     double hf = size.height / 667.0;
     double wf = size.width / 375.0;
     ScreenRatio.setScreenRatio(size: size);
-    print(axis);
     int i = 0;
 
     List<dynamic> list = new DataListBuilder().cardList;
     return new Scaffold(
-      body: Column(
+      body: ListView(
         children: <Widget>[
           new Padding(
             padding: new EdgeInsets.only(top: 40.0),
@@ -60,12 +59,15 @@ class _ExampleState extends State<CarouselDemoExample> {
                   )
                   .toList())),
           new Container(
-            padding: new EdgeInsets.only(top: 30.0 * hf, bottom: 30.0 * hf),
+            padding: new EdgeInsets.only(top: 30.0 * hf, bottom: 20.0 * hf),
             child: Carousel(
               height: 350.0 * hf,
               width: size.width,
               type: type,
+              indicatorType: "dot",
+              arrowColor: Colors.white,
               axis: axis,
+              showArrow: true,
               children: list.map((l) {
                 i++;
                 return (new Container(
@@ -78,26 +80,28 @@ class _ExampleState extends State<CarouselDemoExample> {
               direction: Axis.horizontal,
               spacing: 5.0 * wf,
               runSpacing: 10.0,
-              alignment: WrapAlignment.start,
+              alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.start,
               children: <Widget>[]..addAll([
                   "simple",
                   "slideswiper",
                   "xRotating",
-                  "yrotating",
+                  "yRotating",
                   "zRotating",
                   "multirotating"
                 ]
                     .map(
                       (String carouselType) => new RoundButton(
-                            height: 45.0 * hf,
+                            height: 48.0 * hf,
                             width: carouselType == "multirotating"
                                 ? 135.0 * hf
                                 : 125.0 * hf,
                             color: type == carouselType
                                 ? Color(0xff8FAD16)
                                 : Color(0xffb5b8b9),
-                            text: carouselType,
+                            text: carouselType == "multirotating"
+                                ? "multi\nRotating"
+                                : carouselType,
                             onPressed: () {
                               this.setState(() {
                                 type = carouselType;

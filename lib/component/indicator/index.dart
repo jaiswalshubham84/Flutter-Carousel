@@ -11,22 +11,26 @@ class Indicator extends StatelessWidget {
   final Color unSelectedColor;
   final int totalPage;
   final double width;
+  final PageController controller;
   Props props;
   Widget indecatorWidget;
-  Indicator(
-      {this.currentPage,
-      this.indicatorName,
-      this.selectedColor,
-      this.unSelectedColor,
-      this.width,
-      this.totalPage}) {
+
+  Indicator({
+    this.currentPage,
+    this.indicatorName,
+    this.selectedColor,
+    this.unSelectedColor,
+    this.width,
+    this.totalPage,
+    this.controller,
+  }) {
     props = Props(
-      currentPage: currentPage,
-      selectedColor: selectedColor,
-      totalPage: this.totalPage,
-      unSelectedColor: unSelectedColor,
-      width: width,
-    );
+        currentPage: currentPage,
+        selectedColor: selectedColor,
+        totalPage: this.totalPage,
+        unSelectedColor: unSelectedColor,
+        width: width,
+        controller: controller);
     indecatorWidget = getIndicator(indicatorName, props);
   }
 
@@ -36,7 +40,10 @@ class Indicator extends StatelessWidget {
   }
 }
 
-Widget getIndicator(String indicatorName, Props props) {
+Widget getIndicator(
+  String indicatorName,
+  Props props,
+) {
   Widget indicator;
   switch (indicatorName) {
     case "bar":
