@@ -1,9 +1,9 @@
 import 'package:carosel/component/button.dart';
-import 'package:carosel/component/carousel/carousel.dart';
 import 'package:carosel/component/data.dart';
 import 'package:carosel/component/style.dart';
 import 'package:carosel/service/screen_ratio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_carousel/carousel.dart';
 
 class CarouselDemoExample extends StatefulWidget {
   @override
@@ -14,6 +14,15 @@ class _ExampleState extends State<CarouselDemoExample> {
   Axis axis = Axis.horizontal;
   String type = "simple";
   String axisType = "HORIZONTAL";
+  List<String> assetList = [
+    'assets/1.jpeg',
+    'assets/2.jpeg',
+    'assets/3.jpeg',
+    'assets/4.jpeg',
+    'assets/5.jpeg',
+    'assets/6.jpeg',
+    'assets/7.jpeg'
+  ];
 
   @override
   void initState() {
@@ -68,10 +77,10 @@ class _ExampleState extends State<CarouselDemoExample> {
               arrowColor: Colors.white,
               axis: axis,
               showArrow: true,
-              children: list.map((l) {
+              children: assetList.map((asset) {
                 i++;
                 return (new Container(
-                  decoration: decoration(l.pic),
+                  decoration: decoration(asset),
                 ));
               }).toList(),
             ),
